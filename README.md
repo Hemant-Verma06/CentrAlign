@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI-Powered Dynamic Form Generator
 
-## Getting Started
+A full-stack Next.js application that uses Google Gemini AI to generate dynamic forms based on user prompts, with a context-aware memory layer using Pinecone to learn from past forms.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **AI Form Generation**: Convert natural language prompts into JSON form schemas using Google Gemini.
+- **Multimodal Support**: Upload images (sketches, examples) to guide the AI generation.
+- **Context-Aware Memory**: Uses Pinecone vector database to retrieve relevant past forms and style the new form accordingly (RAG).
+- **Dynamic Rendering**: Publicly shareable forms rendered from JSON schemas.
+- **Submissions**: Collect and view form submissions with support for file uploads.
+- **Authentication**: Secure email/password login with JWT.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Frontend**: Next.js 15 (App Router), TypeScript, TailwindCSS
+- **Backend**: Next.js API Routes
+- **Database**: MongoDB Atlas (Data), Pinecone (Vector Memory)
+- **AI**: Google Gemini (`gemini-1.5-flash` for generation, `text-embedding-004` for embeddings)
+- **Storage**: Cloudinary (Image uploads)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Setup Instructions
 
-## Learn More
+1.  **Clone the repository**
+    ```bash
+    git clone <repo-url>
+    cd ai_form_generator
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+2.  **Install Dependencies**
+    ```bash
+    npm install
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3.  **Environment Variables**
+    Copy `.env.example` to `.env.local` and fill in your keys:
+    ```bash
+    cp .env.example .env.local
+    ```
+    Required keys:
+    - `MONGODB_URI`: MongoDB connection string
+    - `JWT_SECRET`: Secret for signing tokens
+    - `GEMINI_API_KEY`: Google AI Studio API Key
+    - `PINECONE_API_KEY`: Pinecone API Key
+    - `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`: Cloudinary Cloud Name
+    - `CLOUDINARY_API_KEY`: Cloudinary API Key
+    - `CLOUDINARY_API_SECRET`: Cloudinary API Secret
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4.  **Run Development Server**
+    ```bash
+    npm run dev
+    ```
+    Open [http://localhost:3000](http://localhost:3000).
 
-## Deploy on Vercel
+## Architecture & Scalability
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Memory Retrieval (RAG)
+To handle thousands of past forms efficiently, we use **Retrieval-Augmented Generation (RAG)**:
+1.  **Storage**: When a form is created, we generate an embedding of its `purpose` using Gemini's embedding model and store it in Pinecone with metadata.
+2.  **Retrieval**: When generating a new form, we embed the user's prompt and query Pinecone for the **Top-5** most semantically similar forms created by that user.
+3.  **Generation**: We inject the summaries of these 5 forms into the Gemini system prompt. This allows the AI to "remember" the user's preferences and field patterns without sending the entire history (which would exceed token limits).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Scalability
+- **Vector Search**: Pinecone handles millions of vectors with low latency.
+- **Token Optimization**: We only send a small slice of relevant context (Top-K), ensuring the prompt size remains constant regardless of history size.
+- **Database**: MongoDB handles the structured data (schemas, submissions) separately from the vector search.
+
+## Example Prompts
+
+- "Create a job application form for a Senior React Developer."
+- "I need a feedback survey for my coffee shop with a rating field."
+- "Registration form for a hackathon with team size and project link."
