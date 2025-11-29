@@ -74,14 +74,14 @@ export default function PublicFormPage() {
                             {field.type === 'textarea' ? (
                                 <textarea
                                     required={field.required}
-                                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 text-black placeholder-gray-500"
                                     placeholder={field.placeholder}
                                     onChange={(e) => handleInputChange(field.label, e.target.value)}
                                 />
                             ) : field.type === 'select' ? (
                                 <select
                                     required={field.required}
-                                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 text-black"
                                     onChange={(e) => handleInputChange(field.label, e.target.value)}
                                 >
                                     <option value="">Select an option</option>
@@ -115,7 +115,7 @@ export default function PublicFormPage() {
                                 <input
                                     type={field.type}
                                     required={field.required}
-                                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 text-black placeholder-gray-500"
                                     placeholder={field.placeholder}
                                     onChange={(e) => handleInputChange(field.label, e.target.value)}
                                 />

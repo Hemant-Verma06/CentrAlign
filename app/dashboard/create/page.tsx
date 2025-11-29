@@ -67,7 +67,7 @@ export default function CreateFormPage() {
                                 Describe your form
                             </label>
                             <textarea
-                                className="w-full p-3 border rounded-lg h-32 focus:ring-2 focus:ring-indigo-500"
+                                className="w-full p-3 border rounded-lg h-32 focus:ring-2 focus:ring-indigo-500 text-black placeholder-gray-500"
                                 placeholder="e.g. I need a job application form for a software engineer position..."
                                 value={prompt}
                                 onChange={(e) => setPrompt(e.target.value)}
@@ -111,14 +111,14 @@ export default function CreateFormPage() {
                                                 {field.label} {field.required && <span className="text-red-500">*</span>}
                                             </label>
                                             {field.type === 'textarea' ? (
-                                                <textarea className="w-full p-2 border rounded bg-gray-50" disabled />
+                                                <textarea className="w-full p-2 border rounded bg-gray-50 text-black" disabled />
                                             ) : field.type === 'select' ? (
-                                                <select className="w-full p-2 border rounded bg-gray-50" disabled>
+                                                <select className="w-full p-2 border rounded bg-gray-50 text-black" disabled>
                                                     <option>Select...</option>
                                                     {field.options?.map((opt: string) => <option key={opt}>{opt}</option>)}
                                                 </select>
                                             ) : (
-                                                <input type={field.type} className="w-full p-2 border rounded bg-gray-50" disabled />
+                                                <input type={field.type} className="w-full p-2 border rounded bg-gray-50 text-black" disabled />
                                             )}
                                         </div>
                                     ))}
